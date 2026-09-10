@@ -78,8 +78,6 @@ cat .env
 
 DB_PATH=/opt/reactor-app/reactor.db
 DB_TYPE=sqlite3
-
-# API Keys
 SENSOR_API_KEY=rw_sk_7f8a9b2c3d4e5f6g7h8i9j0k
 ALERT_WEBHOOK=https://alerts.internal.reactor.htb/webhook
 NODE_ENV=production
