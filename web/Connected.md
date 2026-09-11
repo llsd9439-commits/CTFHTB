@@ -112,4 +112,6 @@ uid=999(asterisk) gid=1000(asterisk) euid=0(root) egid=0(root) groups=0(root),10
 cat /root/root.txt
 2cfe3xxxxxxxxxxxxxxx
 
-
+```bash
+cat /usr/sbin/sysadmin_ha
+```
