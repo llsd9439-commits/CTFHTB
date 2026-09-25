@@ -54,7 +54,24 @@ Session completed.
 
 получение rce через многие пути возможны в wordpress, посмотрим что уготовили нам тут
 <img width="1610" height="495" alt="{90A2075E-149A-4066-85DA-6B53728B3D45}" src="https://github.com/user-attachments/assets/71f2bf3a-16d5-460d-ae55-2dbb926b6b4b" />
-я мог редачить темы, туда закинул cmd.php и ну как бы да
+я мог редачить темы, туда закинул cmd.php
+по ss увидел что открыт Memcached, там же и увидел пароль от Orka
+
+#ROOT
+
+
+<img width="1088" height="231" alt="{16D29869-EA0E-4DBC-8831-8A4820524FA8}" src="https://github.com/user-attachments/assets/bc917ba7-7d45-4663-87cb-73f181fb4755" />
+
+<img width="1031" height="853" alt="{AA71A9B8-591A-402E-A2AD-58E1EB90748D}" src="https://github.com/user-attachments/assets/429bca19-2349-4093-abd4-df860a63e334" />
+
+перенесем этот биткоин себе на машину что бы узнать какой там пароль, ну или же посмотрим есть ли там возможность получить как то bash с этого скрипта, потому что именного его мы можем запускать от root
+
+<img width="1162" height="924" alt="{6D551B48-BC59-4FD9-814E-6284A700A69A}" src="https://github.com/user-attachments/assets/c32583a3-bedd-412f-b8ee-c8e6544a237e" />
+кароче разреверсил, увидел что там есть пароль, и то что он вызывает питон команду, через python по linpeas видел что есть доступ на запись /usr/sbin
+
+<img width="708" height="519" alt="{69432DA5-7902-4ABE-A09D-FF687D5AC57F}" src="https://github.com/user-attachments/assets/e6e7ab3d-8bac-45d4-9ee5-dd94c55f80cf" />
+
+
 
 
 
