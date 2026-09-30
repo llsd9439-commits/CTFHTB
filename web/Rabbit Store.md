@@ -74,7 +74,7 @@ Note: All requests to this endpoint are sent in JSON format.
 ## SSTI
 <img width="1489" height="726" alt="{1C60B2E7-3231-470F-B1AE-7862148D2805}" src="https://github.com/user-attachments/assets/e3147daa-6fe6-4598-aeca-4ef7d3848b9a" />
 
-завтра доделаю
+завтра продолжу
 
 
 
