@@ -21,3 +21,33 @@ PORT      STATE SERVICE VERSION
 4369/tcp  open  epmd    Erlang Port Mapper Daemon
 25672/tcp open  unknown
 ```
+
+### 80 Порт
+
+<img width="2556" height="1092" alt="{D0903653-BB82-4E78-9005-B7AE41E1DABE}" src="https://github.com/user-attachments/assets/976e5277-749d-428c-ba15-82a3f2907d82" />
+
+что бы авторизоваться нам приходиться добавить storage.cloudsite.thm в /etc/hosts/
+
+<img width="2560" height="900" alt="{B870F9F1-549E-491D-80E2-95F8564C4058}" src="https://github.com/user-attachments/assets/220aedeb-2629-4b59-b974-7b809f5aebf3" />
+
+в бурпе нашел jwt решил посмотреть что и как
+
+<img width="984" height="694" alt="{763D1177-61FD-4100-8E5C-029B2CDE6877}" src="https://github.com/user-attachments/assets/cd02dd10-f13a-458a-a32f-c8d2fa3fd8d4" />
+
+
+при логине показывает inactive от сервера, если бы был секретный ключ то мы могли бы подделать jwt, но увы у нас его нету
+
+
+
+
+так что придем к другому варианту, попробуем ввести в /api/register - subscription active 
+
+
+<img width="1520" height="742" alt="{D7538C7C-DDDE-46D9-B505-82EA4C4A6EC0}" src="https://github.com/user-attachments/assets/c83935b0-57c6-4bee-b204-53ca9f467e11" />
+
+
+<img width="2560" height="1285" alt="{8216FFDC-E607-4B0E-8398-ADE0855B4D02}" src="https://github.com/user-attachments/assets/4de573cb-4f0b-4455-b00c-cc51c0e33fa5" />
+
+
+
+
