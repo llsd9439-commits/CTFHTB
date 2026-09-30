@@ -26,6 +26,7 @@ TO·GET·TO·KING·MINOS·YOU·MUST·FIRST·MAKE·USE·OF·THE·?KEY······
 <img width="1923" height="289" alt="{B114AAC0-38FA-4FC9-860C-522A184428E7}" src="https://github.com/user-attachments/assets/764894cc-006e-49a2-b0ed-b8611705ca67" />
 
 <img width="811" height="213" alt="{16C478BC-0829-4846-953E-14B97A6B0E1F}" src="https://github.com/user-attachments/assets/33a8fd3e-7109-4fb9-b749-1b9ebe672cc9" />
+
 ура, мы получили rce
 
 <img width="391" height="107" alt="{F7628BD6-C81E-4756-B6F0-823115DBB9C5}" src="https://github.com/user-attachments/assets/acecc049-a170-4adf-bccb-a49f77458653" />
