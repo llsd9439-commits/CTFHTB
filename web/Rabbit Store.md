@@ -48,6 +48,27 @@ PORT      STATE SERVICE VERSION
 
 <img width="2560" height="1285" alt="{8216FFDC-E607-4B0E-8398-ADE0855B4D02}" src="https://github.com/user-attachments/assets/4de573cb-4f0b-4455-b00c-cc51c0e33fa5" />
 
+у нас есть SSRF, попробовав порты я нашел 3000 это тот самый поддомен
 
+<img width="1921" height="1023" alt="{A638F7D0-3B4F-4BC8-8B7A-46941838B535}" src="https://github.com/user-attachments/assets/e15fd95f-2596-4241-8565-3101dadf5494" />
+
+
+```
+Endpoints Perfectly Completed
+
+POST Requests:
+/api/register - For registering user
+/api/login - For loggin in the user
+/api/upload - For uploading files
+/api/store-url - For uploadion files via url
+/api/fetch_messeges_from_chatbot - Currently, the chatbot is under development. Once development is complete, it will be used in the future.
+
+GET Requests:
+/api/uploads/filename - To view the uploaded files
+/dashboard/inactive - Dashboard for inactive user
+/dashboard/active - Dashboard for active user
+
+Note: All requests to this endpoint are sent in JSON format.
+```
 
 
