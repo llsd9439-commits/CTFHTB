@@ -3,6 +3,8 @@
 #СКАНИРОВАНИЕ ПОРТОВ
 
 <img width="893" height="222" alt="{1D404F36-BB46-4C74-8FA1-8A7211201382}" src="https://github.com/user-attachments/assets/63604373-3626-4d5f-82aa-d6f1488dbb33" />
+
+
 на веб странице вижу это
 
 <img width="858" height="874" alt="{E1C490BF-D752-4B86-9138-732782537CBF}" src="https://github.com/user-attachments/assets/86b99402-6755-47de-ae4d-6af6352ee099" />
