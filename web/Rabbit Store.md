@@ -482,23 +482,7 @@ Public IPv4s:
 
 
 ══╣ IAM Role
-{                                                                                                                                                                                       
-  "Code" : "Success",
-  "LastUpdated" : "2026-10-02T03:51:42Z",
-  "InstanceProfileArn" : "arn:aws:iam::739930428441:instance-profile/vulnerable-machine",
-  "InstanceProfileId" : "AIPA2YR2KKQMUBACPRZLH"
-}
-Role: vulnerable-machine
-{
-  "Code" : "Success",
-  "LastUpdated" : "2026-10-02T03:51:28Z",
-  "Type" : "AWS-HMAC",
-  "AccessKeyId" : "ASIA2YR2KKQM3HFHJ6ZH",
-  "SecretAccessKey" : "eRFe3PEnIx+gcPQS/FnGovwgLp4tdgRa2SdL9Ahy",
-  "Token" : "IQoJb3JpZ2luX2VjEMT//////////wEaDGV1LWNlbnRyYWwtMSJIMEYCIQD8T6qFgZRVhQEgDPooSajeh6H4RZEV2AMIbqZNzUGl+gIhAITcl/weg+4jPpoFHJyb5M3BTH3jk8Mi7bRdZlKH+NCnKtAFCIz//////////wEQAxoMNzM5OTMwNDI4NDQxIgzl9WEKvjXaeyhJNYUqpAVQbj4IUf15WQGiS/J/SsR+NN2QOsp+3zGDRhFe7WIJkQ/gGi0zHirOlOMIUa2lIjNKNP94PYwUIJLpZeQo62PM9kzs2d63fGGmVCDFtwet4LsyiC0RHwQQ49uVB/rIy7a0cY6FuNT+3rhx/kA6rGucqwAtE3Ym/LU2KUnkA/K73hAan8bV5IL7y1sT3tieNNwuGM/4R+22j/vJyutnHorRaAlrMglUU0nOmSQ2/XSkgTy+MDRqkwxhVDO5yPwlNsK84gHDPOIZba1ASFSBNBW79aPWNg/2EK9Oxr8GVqigprcE4YiQ7rFWfkxL7cYDz0VyZAtleou4DyAhfnUZ+OKttp8yQPmtMYLeB/8lzB+8+UkjJ06Ic0s7i2h3qDGo5053mlTj+ym9daIcrlPT7R6sUPWstzBJrJr3tlq/GJt3FnIKxvHUmnFSzEB+AsRw8FytTphUGXuSsucWFP7RkiM1CPJjhX9cU2WoxOCizCqsRdlICkU4XeTHAIUKkgVcXxV4UBl3EYKI0rDh8PmdcOOF21fWUMDTy6lFsco4oUEtfr65hHp7F0eHhGmAblCocjIutGk6TtytSbDivaxLfJWous/8Vrahyl4hOVdFzTGNUvCDwkT7/GKNqINsIAqRfOmEjCow2lffx7IjHEgan7aOQkJBXaDs/luxuIx2zbsXQppyrOqub6lmMeIazSFg9wjCJGd8D9m7y60YWNPJjPMmL8zKjPAB0C6wFqmWsi/C0ur7QpfXNGZf5tTJ/NK+OZv61jxDbowF+//jQH1JRwQpHlEEpX+FcAI0nVESrl2ogJk4OVSxzNG0Z7FpOxeuKr9pvOIE5ObyHtSWZq4yQpJL2jlQ2m4SpvC1CmxZyA/bIu7epkBfU4iXes3jsjW7D0FS+MeLMM7U/NUGOrABoIkXghJW2Pmscr6zZ9yAtAgXJy4/DL6Jh+pra5bTsJKK4rrd8fGX3reDo+NHubJu3toPR4RiZnsYy7RXS2yq/5U7O3Pd8Ov+mSZ198qF/Jx2S9Vm32W8IZYnTXCJL4bCeDaviS6WPZoq4TZrQFC+VYAnCMnuWG5LS9lZq8bEpx27WLjebkAhqNS1g01M0WODSbV3q/OSvE0o6R1mEhUXoeur4gdBxHHskxv6HzAydeE=",
-  "Expiration" : "2026-10-02T10:06:39Z"
-}
-
+тут были токены aws
 
 ══╣ User Data
 Content-Type: multipart/mixed; boundary="==BOUNDARY=="                                                                                                                                  
@@ -518,14 +502,7 @@ bootcmd:
 --==BOUNDARY==--
 
 ══╣ EC2 Security Credentials
-{                                                                                                                                                                                       
-  "Code" : "Success",
-  "LastUpdated" : "2026-10-02T03:52:19Z",
-  "Type" : "AWS-HMAC",
-  "AccessKeyId" : "ASIA2YR2KKQMWZLKRR4W",
-  "SecretAccessKey" : "numDrrO5wZ2QyGl+0PaCambHJxYmgsLycj0bWXc2",
-  "Token" : "IQoJb3JpZ2luX2VjEMT//////////wEaDGV1LWNlbnRyYWwtMSJGMEQCIA1ZJ3tvFE5tpNTTfNpAmjsRStDN9L5es0DHsIFXFJEJAiBa44tCO6w6WB+4aXn8SQ4c+/BGbMKXkSZ3Uo9pyzP8eirZBAiN//////////8BEAMaDDczOTkzMDQyODQ0MSIMA7mo3mHe9DtxSnVBKq0E/XwOviIKzK+az+HDmoPcfbuD73cJ12kOm5P+motwGOrZ0r4xju6pqIZkrsluCn+0QqDH8cB54sUXer5rAtXfaTkPcDLtONI3peWIWfrGS27FUs4LGvUT1oYSU95zOfP2YC+/u6otI7R4exqAGhd8XXj8JfMsRmnTipB4jHkeUH9YI0+65mXSydzJSlmLPLy/KfDFVRjMNMd5E/eHnbVZT2xkXWzGTa06deR55jl4xPUcrGsDKVWk6k/vF8T5U4Ps6HF4+fi2OKe6HWAqJ0+RJVxFJqrF6k7HkCGOPeKvG694w9qtiKIjEeKQ3vGsgSnbAVOyghgFMQONeT7fe0WAv6Pt8ebVkn0EsuqmDvM0AwKQ3CdwoWpTos8uH2At+xAtgOI2hHzzY+9eSSPJmOMKtjGcA2t1/TR5cTR7J+7sCJQ09cp0I7wNi0cQM7XzUHlmyyjnUNXvpnSpjb09Gv/VzqF+eWo1xGfBBxBph3tWUKbGzO+SuIh1tXLsOBzgyuorDPadE9G/zx0/G1OD5r9ibcWv/KbnFI0WF3Xu3eExJz+d7RC6GPROnQ9caXvYk/ulhEzYgsokMDaPPX2i0rqkN+AgSBV0fm/nJBlv1aBvr5h2n58KHQVvgMFXKjgDaTOAfYSP69dY6utUyoR9CLcpdXDDLbO68oi2pivBobfof5ETyIvrXdlMt4b0ICVX5HmQ/glUliNU2ppiNwWjg84bso8q17lVniEvPIf2k3YwztT81QY6lAIpXq2gzECjFbMPtj/5NMjCkYRvan5Uz6aoen5+5wDox60jQwJuyVH+iVJnnG17ImyMk7L6uhcfPOUtnmCwNMzlOtRnMR2upP7QSwb/dF6YjiW43OZWR/wX1UjYTfBcIKORtsNv6gBzhO1jRZX1JOhK1n7cF+7w/P6gRgThQTEhC34BQpkuFXky38aLBH/IBuO1DfY5eQmT9f5Ow99BcwYOFSVWTp/+rwgkjaorzdGVVUMi5XxkSXuOIWiLLTNNIvfmIJkN0eD2AHOviGiQ9se20kQjsPUwyzP4YeyY91qJRbmeFf0XJq5diXhElJJ9iyIkZBh1vyS+lf0Z77S8z0USRpmg4Qu+SBAz004IBCFJkQQuk6U=",
-  "Expiration" : "2026-10-02T10:06:45Z"
+тут были токены aws
 }
 ══╣ SSM Runnig
 root         599  0.0  0.4 1832632 18640 ?       Ssl  03:10   0:00 /usr/bin/amazon-ssm-agent                                                                                            
