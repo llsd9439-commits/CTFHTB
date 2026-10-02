@@ -95,7 +95,7 @@ RCE (от англ. Remote Code Execution — удаленное выполне�
 
 <img width="1489" height="726" alt="{1C60B2E7-3231-470F-B1AE-7862148D2805}" src="https://github.com/user-attachments/assets/e3147daa-6fe6-4598-aeca-4ef7d3848b9a" />
 
-тут я уже ввел poc ssti который выглядит так - {{lipsum.__globals__['os'].popen('id').read()}} - вместо id я подставил команду для revshell
+тут я уже ввел poc ssti который выглядит так - ```{{lipsum.__globals__['os'].popen('id').read()}}``` - вместо id я подставил команду для revshell
 
 <img width="784" height="173" alt="{17E11B39-39A3-45B0-A203-5087225C3964}" src="https://github.com/user-attachments/assets/02a19493-044f-4b85-9954-2ac3404c0445" />
 
