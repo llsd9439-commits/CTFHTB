@@ -25,11 +25,11 @@ PORT      STATE SERVICE VERSION
 
 <img width="2556" height="1092" alt="{D0903653-BB82-4E78-9005-B7AE41E1DABE}" src="https://github.com/user-attachments/assets/976e5277-749d-428c-ba15-82a3f2907d82" />
 
-что бы авторизоваться нам приходиться добавить storage.cloudsite.thm в /etc/hosts/
+что бы авторизоваться нам приходиться добавить storage.cloudsite.thm в /etc/hosts/ так как авторизация проходит на домене storage.cloudsite.thm
 
 <img width="2560" height="900" alt="{B870F9F1-549E-491D-80E2-95F8564C4058}" src="https://github.com/user-attachments/assets/220aedeb-2629-4b59-b974-7b809f5aebf3" />
 
-в бурпе нашел jwt решил посмотреть что и как
+в бурпе нашел jwt решил посмотреть на него в расшифрованном виде, вижу что в jwt используется subscription
 
 <img width="984" height="694" alt="{763D1177-61FD-4100-8E5C-029B2CDE6877}" src="https://github.com/user-attachments/assets/cd02dd10-f13a-458a-a32f-c8d2fa3fd8d4" />
 
@@ -39,18 +39,20 @@ PORT      STATE SERVICE VERSION
 
 
 
-так что придем к другому варианту, попробуем ввести в /api/register - subscription active 
+так что придем к другому варианту, попробуем ввести в /api/register - "subscription":"active" 
 
 
 <img width="1520" height="742" alt="{D7538C7C-DDDE-46D9-B505-82EA4C4A6EC0}" src="https://github.com/user-attachments/assets/c83935b0-57c6-4bee-b204-53ca9f467e11" />
 
-
+# SSRF 
+мы видим форму загрузки файлов на локальный хост, так же чуть ниже видим то что можно устанавливать любые файлы по ссылке, первым делом я решил проверить возможно ли ssrf, вписал http://127.0.0.1:80/ и получил главную страницу cloudsite.thm, так же упустил один важный фактор, до этого я проходился фаззингом на домене storage.cloudsite.thm и нашел /api/docs к которому я не имел доступа, так как он был access denied, логичным было попробовать http://127.0.0.1:80/api/docs, что я и сделал, но по итогу мне выдало 404, так я пришел к тому что исказл другие открытые порты, наткнулся на 3000 порт, и после того как увидел главную страницу авторизации там, понял, что это то что нам нужно
 <img width="2560" height="1285" alt="{8216FFDC-E607-4B0E-8398-ADE0855B4D02}" src="https://github.com/user-attachments/assets/4de573cb-4f0b-4455-b00c-cc51c0e33fa5" />
 
-у нас есть SSRF, попробовав порты я нашел 3000 это тот самый поддомен
+на этом скриншоте видно что как раз мой запрос к 3000 порту
 
 <img width="1921" height="1023" alt="{A638F7D0-3B4F-4BC8-8B7A-46941838B535}" src="https://github.com/user-attachments/assets/e15fd95f-2596-4241-8565-3101dadf5494" />
 
+### Содержимое /api/docs
 
 ```
 Endpoints Perfectly Completed
