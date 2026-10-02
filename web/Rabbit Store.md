@@ -3,8 +3,7 @@
 
 <img width="1487" height="1000" alt="{CE578074-2287-4441-8FF9-63EA7E3F7A29}" src="https://github.com/user-attachments/assets/f03e6aef-0a5d-4493-b7e3-60078fc68983" />
 
-
-
+ 
 ## Сканирование портов
 
 
