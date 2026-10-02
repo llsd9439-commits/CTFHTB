@@ -54,7 +54,7 @@ SSRF (Server-Side Request Forgery) — это уязвимость веб-без
 
 <img width="2560" height="1285" alt="{8216FFDC-E607-4B0E-8398-ADE0855B4D02}" src="https://github.com/user-attachments/assets/4de573cb-4f0b-4455-b00c-cc51c0e33fa5" />
 
-на этом скриншоте видно что как раз мой запрос к 3000 порту
+на этом скриншоте видно что как раз мой запрос к 3000 порту сработал
 
 <img width="1921" height="1023" alt="{A638F7D0-3B4F-4BC8-8B7A-46941838B535}" src="https://github.com/user-attachments/assets/e15fd95f-2596-4241-8565-3101dadf5494" />
 
