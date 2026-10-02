@@ -25,7 +25,7 @@ PORT      STATE SERVICE VERSION
 
 <img width="2556" height="1092" alt="{D0903653-BB82-4E78-9005-B7AE41E1DABE}" src="https://github.com/user-attachments/assets/976e5277-749d-428c-ba15-82a3f2907d82" />
 
-что бы авторизоваться нам приходиться добавить storage.cloudsite.thm в /etc/hosts/ так как авторизация проходит на домене storage.cloudsite.thm
+чтобы авторизоваться нам приходится добавить storage.cloudsite.thm в /etc/hosts/ так как авторизация проходит на домене storage.cloudsite.thm
 
 <img width="2560" height="900" alt="{B870F9F1-549E-491D-80E2-95F8564C4058}" src="https://github.com/user-attachments/assets/220aedeb-2629-4b59-b974-7b809f5aebf3" />
 
