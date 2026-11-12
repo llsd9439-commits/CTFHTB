@@ -70,4 +70,5 @@ do you want sqlmap to try to optimize value(s) for DBMS delay responses (option 
 | admin    | 5765dcb76627ba4e2fd673e073def4ae |
 +----------+----------------------------------+
 ```
+но они не подходят 
 
