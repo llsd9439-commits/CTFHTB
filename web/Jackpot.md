@@ -1,4 +1,4 @@
-<img width="1916" height="1022" alt="{FCB0C2FF-77DE-45B5-877D-AFBC0932E4E6}" src="https://github.com/user-attachments/assets/b0846030-4a3c-4444-8220-e2d3fa4512be" /><img width="1774" height="1083" alt="{3559229D-35C5-4892-B01A-6F3E70434DA6}" src="https://github.com/user-attachments/assets/59719825-6221-4a77-9ef1-9876d241617a" />
+
 
 
 # Порты 
