@@ -1,5 +1,6 @@
 
-![Uploading {9D778BCF-53F5-443C-A444-644133B0C458}.png…]()
+
+<img width="1780" height="221" alt="{9D778BCF-53F5-443C-A444-644133B0C458}" src="https://github.com/user-attachments/assets/91aff276-cbfa-461b-ae59-c18ea1755292" />
 
 
 # Порты 
