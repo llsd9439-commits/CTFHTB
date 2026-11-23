@@ -118,7 +118,7 @@ WFS_CMD_CDM_GET_FLAG 0x4ff
 отключаем мониторинг
 <img width="954" height="720" alt="{86471ABA-D543-4540-A06E-4833894240E7}" src="https://github.com/user-attachments/assets/9eb4de7a-dd06-43af-bb21-056a7513d577" />
 
-выдаем себе 1 купюру и еще пару раз
+выдаем себе 1 купюру (потом полностью все)
 <img width="1786" height="742" alt="{84298A22-A40A-4DD6-9AC4-83703A7313AF}" src="https://github.com/user-attachments/assets/6411f35e-44c4-496e-b533-aa65ca34b8b1" />
 
 # FLAG
